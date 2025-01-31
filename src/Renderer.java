@@ -32,8 +32,8 @@ public class Renderer {
         xform.setLookAt(scene.getCameraPosition(),
                 scene.getCameraLookAt(),
                 scene.getCameraUp());
-        xform.setProjection();
         xform.setCalibration(scene.getCameraFocal(), scene.getScreenW(), scene.getScreenH());
+        xform.setProjection();
 
         lighting = new Lighting();
         lighting.addAmbientLight(scene.getAmbientI());
