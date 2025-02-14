@@ -190,38 +190,39 @@ public class Rasterizer {
         Matrix C = makeBarycentricCoordsMatrix(v1, v2, v3);
 
         // iterate over the triangle's bounding box
-        // TODO
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        int minx = Math.min(Math.min(v1.getX(),v2.getX()),v3.getX());
+        int miny = Math.min(Math.min(v1.getY(),v2.getY()),v3.getY());
+        int maxx = Math.max(Math.max(v1.getX(),v2.getX()),v3.getX());
+        int maxy = Math.max(Math.max(v1.getY(),v2.getY()),v3.getY());
+        float[] cv1 = v1.getColor().getRGBColorComponents(null);
+        float[] cv2 = v2.getColor().getRGBColorComponents(null);
+        float[] cv3 = v3.getColor().getRGBColorComponents(null);
+        
+        try {
+            Vector vecteur = new Vector(3);
+            vecteur.set(0,1);
+            for (int x = minx; x<=maxx; x++){
+                vecteur.set(1,x);
+                for (int y = miny; y<=maxy; y++){
+                    vecteur.set(2,y);
+                    Vector coords = C.multiply(vecteur);
+                    double a = coords.get(0);
+                    double b = coords.get(1);
+                    double c = coords.get(2);
+                    if (a>=0 && b>=0 && c>=0){
+                        Fragment frag = new Fragment(x, y);
+                        frag.setColor(a*cv1[0]+b*cv2[0]+c*cv3[0],
+                                        a*cv1[1]+b*cv2[1]+c*cv3[1],
+                                        a*cv1[2]+b*cv2[2]+c*cv3[2]);
+                        frag.setDepth(v1.getDepth()*a+v2.getDepth()*b+v3.getDepth()*c);
+                        shader.shade(frag);
+                    }
+                }
+            }
+        }
+        catch (Exception e){
+            System.err.println(e);
+        }
 
     }
 }

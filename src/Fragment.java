@@ -122,9 +122,9 @@ public class Fragment {
     }
 
     public void setColor(Color color) {
-        attributes[1] = color.getRed();
-        attributes[2] = color.getGreen();
-        attributes[3] = color.getBlue();
+        attributes[1] = (double) color.getRed();
+        attributes[2] = (double) color.getGreen();
+        attributes[3] = (double) color.getBlue();
     }
 
     public void setColor(double r, double g, double b) {
