@@ -37,22 +37,8 @@ public class TextureShader extends Shader {
         if (depth.testFragment(fragment)) {
             // The Fragment may not have texture coordinates
             try {
-                // TODO
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                fragment.setColor(texture.sample(fragment.getAttribute(7), fragment.getAttribute(8)));
+                screen.setPixel(fragment.getX(), fragment.getY(), fragment.getColor());
 
 
             } catch (ArrayIndexOutOfBoundsException e) {

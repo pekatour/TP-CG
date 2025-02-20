@@ -215,6 +215,8 @@ public class Rasterizer {
                                         a*cv1[1]+b*cv2[1]+c*cv3[1],
                                         a*cv1[2]+b*cv2[2]+c*cv3[2]);
                         frag.setDepth(v1.getDepth()*a+v2.getDepth()*b+v3.getDepth()*c);
+                        frag.setAttribute(7, a*v1.getAttribute(7)+b*v2.getAttribute(7)+c*v3.getAttribute(7));
+                        frag.setAttribute(8, a*v1.getAttribute(8)+b*v2.getAttribute(8)+c*v3.getAttribute(8));
                         shader.shade(frag);
                     }
                 }

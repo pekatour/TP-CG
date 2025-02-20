@@ -24,14 +24,14 @@ public class Texture {
     /**
      * Samples the texture at texture coordinates (u,v), using nearest neighboor
      * interpolation
-     * u and v and wrapped around to [0,1].
+     * u and v are wrapped around to [0,1].
      */
     public Color sample(double u, double v) {
         // TODO
+        int x = Math.round((float) u * width) % width;
+        int y = Math.round((float) v * height) % height;
+        int c = image.getRGB(x, y);
 
-
-
-
-        return new Color (0,0,0);
+        return new Color(c);
     }
 }

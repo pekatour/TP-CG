@@ -118,19 +118,20 @@ public class Mesh {
         // to the vertex.
         try {
             for (int i = 0; i < 3 * getNumFaces(); i += 3) {
-                // TODO
+                // TOUT DOUX
                 Vector3 n = new Vector3();
+                
+                Vector v1 = new Vector(4);
+                v1.add(vertices[faces[i+1]]);
+                v1.subtract(vertices[faces[i]]);
+                v1.set(3,1);
 
+                Vector v2 = new Vector(4);
+                v2.add(vertices[faces[i+2]]);
+                v2.subtract(vertices[faces[i]]);
+                v2.set(3,1);
 
-
-
-
-
-
-
-
-
-
+                n = (new Vector3(v1)).cross(new Vector3(v2));
 
                 // add the calculated normal n to each vertex of the face
                 for (int j = 0; j < 3; j++) {

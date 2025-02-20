@@ -4,7 +4,7 @@ import algebra.*;
 /**
  * The Lighting class describes a scene lighting environment
  * 
- * @author: gmorin, smondet
+ * @author: gmorin, smondet, pekatour, cyrianr
  */
 public class Lighting {
 
@@ -53,7 +53,7 @@ public class Lighting {
     }
 
     /**
-     * Computes the illuminated color of a 3D points of given position, normal and
+     * Computes the illuminated color of a 3D point of given position, normal and
      * color,
      * and given the camera position and material parameters.
      * Returns an array of size 3.
@@ -71,8 +71,7 @@ public class Lighting {
             Light light = (Light) it.next();
             switch (light.type) {
                 case AMBIENT:
-                    // ambient light contribution
-                    // TODO
+                    I += light.params[0] * ka;
                     break;
 
                 case POINT:
@@ -93,13 +92,11 @@ public class Lighting {
                         h.normalize();
 
                         // diffuse contribution
-                        // TODO
-                        // double I_diffuse = ...;
+                        double I_diffuse = light.params[3] * kd * (normal.dot(l)/(normal.norm()*l.norm()));
 
                         // specular contribution
-                        // TODO
-                        // double I_specular = ...;
-                        // I += I_diffuse + I_specular;
+                        double I_specular = light.params[3] * ks * (normal.dot(h)/(normal.norm()*h.norm()));
+                        I += I_diffuse + I_specular;
 
                     } catch (InstantiationException ex) {
                         /* should not reach */ } catch (SizeMismatchException ex) {
