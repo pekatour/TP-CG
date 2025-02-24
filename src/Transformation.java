@@ -88,8 +88,6 @@ public class Transformation {
         ps = projection.multiply(p);
         ps.set(0,ps.get(0)/ps.get(2));
         ps.set(1,ps.get(1)/ps.get(2));
-
-
         return new Vector3(ps);
     }
 

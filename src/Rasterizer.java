@@ -194,9 +194,6 @@ public class Rasterizer {
         int miny = Math.min(Math.min(v1.getY(),v2.getY()),v3.getY());
         int maxx = Math.max(Math.max(v1.getX(),v2.getX()),v3.getX());
         int maxy = Math.max(Math.max(v1.getY(),v2.getY()),v3.getY());
-        float[] cv1 = v1.getColor().getRGBColorComponents(null);
-        float[] cv2 = v2.getColor().getRGBColorComponents(null);
-        float[] cv3 = v3.getColor().getRGBColorComponents(null);
         
         try {
             Vector vecteur = new Vector(3);
@@ -211,12 +208,9 @@ public class Rasterizer {
                     double c = coords.get(2);
                     if (a>=0 && b>=0 && c>=0){
                         Fragment frag = new Fragment(x, y);
-                        frag.setColor(a*cv1[0]+b*cv2[0]+c*cv3[0],
-                                        a*cv1[1]+b*cv2[1]+c*cv3[1],
-                                        a*cv1[2]+b*cv2[2]+c*cv3[2]);
-                        frag.setDepth(v1.getDepth()*a+v2.getDepth()*b+v3.getDepth()*c);
-                        frag.setAttribute(7, a*v1.getAttribute(7)+b*v2.getAttribute(7)+c*v3.getAttribute(7));
-                        frag.setAttribute(8, a*v1.getAttribute(8)+b*v2.getAttribute(8)+c*v3.getAttribute(8));
+                        for (int i = 0; i < frag.getNumAttributes(); i++) {
+                            frag.setAttribute(i, a*v1.getAttribute(i)+b*v2.getAttribute(i)+c*v3.getAttribute(i));
+                        }
                         shader.shade(frag);
                     }
                 }

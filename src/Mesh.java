@@ -118,7 +118,7 @@ public class Mesh {
         // to the vertex.
         try {
             for (int i = 0; i < 3 * getNumFaces(); i += 3) {
-                // TOUT DOUX
+                // TODO
                 Vector3 n = new Vector3();
                 
                 Vector v1 = new Vector(4);

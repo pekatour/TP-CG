@@ -25,8 +25,8 @@ public class Renderer {
         screen.clearBuffer();
         // shader = new SimpleShader (screen);
         shader = new PainterShader(screen);
-        // rasterizer = new Rasterizer(shader);
-        rasterizer = new PerspectiveCorrectRasterizer (shader);
+        rasterizer = new Rasterizer(shader);
+        // rasterizer = new PerspectiveCorrectRasterizer (shader);
 
         xform = new Transformation();
         xform.setLookAt(scene.getCameraPosition(),
@@ -150,11 +150,11 @@ public class Renderer {
         wait(3);
 
         // solid rendering, no lighting
-        // screen.clearBuffer();
-        // shader.reset();
-        // renderSolid();
-        // screen.swapBuffers();
-        // wait(3);
+        screen.clearBuffer();
+        shader.reset();
+        renderSolid();
+        screen.swapBuffers();
+        wait(3);
 
         // solid rendering, with lighting
         screen.clearBuffer();
@@ -176,13 +176,13 @@ public class Renderer {
         wait(3);
 
         // solid rendering, with texture combined with base color
-//         screen.clearBuffer();
-//         texShader.reset();
-//         texShader.setCombineWithBaseColor(true);
-//         shader = texShader;
-//         renderSolid();
-//         screen.swapBuffers();
-//         wait(3);
+        screen.clearBuffer();
+        texShader.reset();
+        texShader.setCombineWithBaseColor(true);
+        shader = texShader;
+        renderSolid();
+        screen.swapBuffers();
+        wait(3);
 
         screen.destroy();
         System.exit(0);

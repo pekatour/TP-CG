@@ -1,0 +1,13 @@
+make tests
+
+# cube couleur, profondeur fixée
+make run SCENE=data/example0.scene
+
+# singe lumière
+make run SCENE=data/example2.scene
+
+# mur texture simple, moyenne texture et couleur
+make run SCENE=data/example_textured.scene
+
+# Changer Rasterizer et refaire commande
+
