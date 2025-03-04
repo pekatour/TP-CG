@@ -211,6 +211,7 @@ public class Rasterizer {
                         for (int i = 0; i < frag.getNumAttributes(); i++) {
                             frag.setAttribute(i, a*v1.getAttribute(i)+b*v2.getAttribute(i)+c*v3.getAttribute(i));
                         }
+                        
                         shader.shade(frag);
                     }
                 }

@@ -25,8 +25,8 @@ public class Renderer {
         screen.clearBuffer();
         // shader = new SimpleShader (screen);
         shader = new PainterShader(screen);
-        rasterizer = new Rasterizer(shader);
-        // rasterizer = new PerspectiveCorrectRasterizer (shader);
+        // rasterizer = new Rasterizer(shader);
+        rasterizer = new PerspectiveCorrectRasterizer (shader);
 
         xform = new Transformation();
         xform.setLookAt(scene.getCameraPosition(),

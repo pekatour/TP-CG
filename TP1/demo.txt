@@ -9,5 +9,5 @@ make run SCENE=data/example2.scene
 # mur texture simple, moyenne texture et couleur
 make run SCENE=data/example_textured.scene
 
-# Changer Rasterizer et refaire commande
+# Changer le rasterizer dans Renderer.java et refaire commande
 
