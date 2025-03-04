@@ -27,7 +27,7 @@ void display()
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw scene
-        glutWireSphere(.5,10,40);
+        glutWireTeapot(.5);
 
         // flush drawing routines to the window
         glFlush();
@@ -37,7 +37,7 @@ void display()
         glClear(GL_COLOR_BUFFER_BIT);
 
         // draw scene
-        glutSolidSphere(.5,10,40);
+        glutSolidTeapot(.5);
 
         // flush drawing routines to the window
         glFlush();
@@ -99,6 +99,15 @@ int main(int argc, char* argv[])
     glutKeyboardFunc(key);
     // for reshaping
     glutReshapeFunc(reshape);
+
+    // define the projection transformation
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(60,1,1,10);
+    // define the viewing transformation
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(0.0,2.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0);
 
     // tell GLUT to wait for events
     glutMainLoop();
