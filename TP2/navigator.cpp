@@ -19,6 +19,17 @@
 #include <iostream>
 using namespace std;
 
+#define SPEED 0.1 //OpenGL unit
+#define ANG_SPEED 0.5 //degrees
+
+GLdouble x = .0;
+GLdouble y = .0;
+GLdouble z = 5.0;
+
+GLfloat theta = 0;
+GLfloat psi = 0;
+
+
 void display()
 {
     // clear window
@@ -28,14 +39,13 @@ void display()
     glMatrixMode(GL_MODELVIEW);
 
     // draw scene
-    //glLoadIdentity();
+    glLoadIdentity();
+    gluLookAt(x, y, z, .0, .0, -1., .0, 1., .0);
 
     // add a copy of the curr. matrix to the stack
     glPushMatrix();
 
         glPushMatrix();
-
-            // gluLookAt(.0, .0, 5., .0, .0, -1., .0, 1., .0);
 
             // translate by -3 on the z
             glTranslatef(.0f, .0f, -3.f);
@@ -74,8 +84,11 @@ void key(unsigned char key, int, int)
 {
     switch(key)
     {
-        case 27:
-        case 'q': exit(EXIT_SUCCESS); break;
+        case 27: exit(EXIT_SUCCESS); break;
+        case 'q': x += SPEED; break;
+        case 'd': x -= SPEED; break;
+        case 'z': z -= SPEED; break;
+        case 's': z += SPEED; break;
         default: break;
     }
     glutPostRedisplay();
@@ -115,7 +128,7 @@ int main(int argc, char* argv[])
     // define the viewing transformation
     glMatrixMode(GL_MODELVIEW);
     // glLoadIdentity();
-    gluLookAt(.0, .0, 5., .0, .0, -1., .0, 1., .0);
+    // gluLookAt(x, y, z, .0, .0, -1., .0, 1., .0);
 
     // tell GLUT to wait for events
     glutMainLoop();
