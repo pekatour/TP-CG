@@ -23,19 +23,19 @@
 
 
 // Global variables to animate the robotic arm
-float angle1 = .0f;
-float angle2 = .0f;
+float angle1 = 45.0f;
+float angle2 = 45.0f;
 
 // Global variables to rotate the arm as a whole
 float robotAngleX = .0f;
 float robotAngleY = .0f;
 
+float pincepos = 0.5f;
+
 constexpr float angle_step = 5.f;
 constexpr float angle_max = 360.f;
-
-
-
-
+constexpr float pos_step = 0.05f;
+constexpr float pos_max = 0.5f;
 
 
 
@@ -55,53 +55,31 @@ void drawReferenceSystem()
     //**********************************
     // set the line width to 3.0
     //**********************************
-
+    glLineWidth(3.f);
     //**********************************
     // Draw three lines along the x, y, z axis to represent the reference system
     // Use red for the x-axis, green for the y-axis and blue for the z-axis
     //**********************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    glBegin(GL_LINES);
+        glColor3f(1,0,0);
+        glVertex3f(0,0,0);
+        glVertex3f(1,0,0);
+        glColor3f(0,1,0);
+        glVertex3f(0,0,0);
+        glVertex3f(0,1,0);
+        glColor3f(0,0,1);
+        glVertex3f(0,0,0);
+        glVertex3f(0,0,1);
+    glEnd();
 
     //**********************************
     // reset the drawing color to white
     //**********************************
-
+    glColor3f(1,1,1);
     //**********************************
     // reset the line width to 1.0
     //**********************************
-
+    glLineWidth(1.f);
 }
 
 
@@ -117,18 +95,45 @@ void drawJoint()
     //**********************************
     // Bring the cube "up" so that the bottom face is on the xz plane
     //**********************************
-
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(.0f, 1.f, .0f);
 
     //**********************************
     // draw the scaled cube. Remember that the scaling has to be only
     // on the local reference system, hence we need to get a local copy
     // of the modelview matrix...
     //**********************************
+    glScalef(1.,2.,1.);
+    glutWireCube(1);
+    glPopMatrix();
+    
+}
 
+/**
+ * Function that draws the pince
+ */
+void drawPince()
+{
+    //**********************************
+    // we work on a copy of the current MODELVIEW matrix, hence we need to...
+    //**********************************
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+    glTranslatef(.0f, 0.5f, .0f);
+    
+     //**********************************
+    // draw the scaled cube. Remember that the scaling has to be only
+    // on the local reference system, hence we need to get a local copy
+    // of the modelview matrix...
+    //**********************************
+    glScalef(0.2f,1.0f,0.5f);
+    glutWireCube(1);
 
-
-
-
+    //**********************************
+    // "Release" the copy of the current MODELVIEW matrix
+    //**********************************
+    glPopMatrix();
 
 }
 
@@ -140,7 +145,8 @@ void drawRobot()
     //**********************************
     // we work on a copy of the current MODELVIEW matrix, hence we need to...
     //**********************************
-
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
 
     // draw the first joint
     drawJoint();
@@ -151,43 +157,30 @@ void drawRobot()
     //**********************************
     // the second joint
     //**********************************
-
+    glTranslatef(.0f, 2.f, .0f);
+    glRotatef(angle1, 1.0f, 0.0f, 0.0f);
+    drawJoint();
 
     //**********************************
     // the third joint
     //**********************************
+    glTranslatef(.0f, 2.f, .0f);
+    glRotatef(angle2, 1.0f, 0.0f, 0.0f);
+    drawJoint();
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    //draw pinces
+    glTranslatef(pincepos, 2.f, .0f);
+    drawPince();
+    glTranslatef(-2 * pincepos, 0.f, .0f);
+    drawPince();
 
     //**********************************
     // "Release" the copy of the current MODELVIEW matrix
     //**********************************
-
+    glPopMatrix();
 
 }
-
 
 /**
  * Function that handles the display callback (drawing routine)
@@ -203,12 +196,14 @@ void display()
     //**********************************
     // we work on a copy of the current MODELVIEW matrix, hence we need to...
     //**********************************
-
+    glPushMatrix();
 
     //**********************************
     // Rotate the robot around the x-axis and y-axis according to the relevant angles
     //**********************************
-
+    glRotatef(robotAngleY, 0.0f, 1.0f, 0.0f);
+    glRotatef(robotAngleX, 1.0f, 0.0f, 0.0f);
+    
 
 
     // draw the robot
@@ -217,7 +212,7 @@ void display()
     //**********************************
     // "Release" the copy of the current MODELVIEW matrix
     //**********************************
-
+    glPopMatrix();
 
     // flush drawing routines to the window
     glutSwapBuffers();
@@ -235,21 +230,14 @@ void arrows(int key, int, int)
     //**********************************
     // Manage the update of RobotAngleX and RobotAngleY with the arrow keys
     //**********************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    switch (key) {
+        case GLUT_KEY_RIGHT : robotAngleX += angle_step; break;
+        case GLUT_KEY_LEFT: robotAngleX -= angle_step; break;
+        case GLUT_KEY_DOWN: robotAngleY -= angle_step; break;
+        case GLUT_KEY_UP: robotAngleY += angle_step; break;
+        default:
+            break;
+    }
 
 
 
@@ -266,43 +254,20 @@ void arrows(int key, int, int)
 void keyboard(unsigned char key, int, int)
 {
     switch (key) {
-        case 'q':
         case 27:
             exit(0);
             break;
         //**********************************
         // Manage the update of Angle1 with the key 'a' and 'z'
         //**********************************
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        case 'a': angle1 += angle_step; break;
+        case 'z': angle1 -= angle_step; break;
+        case 'e': angle2 -= angle_step; break;
+        case 'r': angle2 += angle_step; break;
+        case 'o': pincepos += pos_step;
+        if (pincepos > pos_max) { pincepos = 0.5f;}; break;
+        case 'l': pincepos -= pos_step;
+        if (pincepos < 0.1) { pincepos = 0.1f;}; break;
         default:
             break;
     }
@@ -323,7 +288,7 @@ void init()
     glLoadIdentity();
 
     // Place the camera
-    gluLookAt(-1., 5., -1., .0, .0, 2., .0, 1., .0);
+    gluLookAt(-3., 5., -3., .0, .0, 2., .0, 1., .0);
 }
 
 
@@ -372,12 +337,12 @@ int main(int argc, char **argv) {
     //**********************************
     // Register the keyboard function
     //**********************************
-
+    glutKeyboardFunc(keyboard);
 
     //**********************************
     // Register the special key function
     //**********************************
-
+    glutSpecialFunc(arrows);
 
     // just print the help
     usage();
