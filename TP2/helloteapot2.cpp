@@ -21,27 +21,20 @@ bool isWire = true;
 
 // function called everytime the windows is refreshed
 void display()
-{
-    if (isWire) {
-        // clear window
-        glClear(GL_COLOR_BUFFER_BIT);
+{   
+    // clear window
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 
+    if (isWire) {
         // draw scene
         glutWireTeapot(.5);
-
-        // flush drawing routines to the window
-        glFlush();
     }
     else {
-        // clear window
-        glClear(GL_COLOR_BUFFER_BIT);
-
         // draw scene
         glutSolidTeapot(.5);
-
-        // flush drawing routines to the window
-        glFlush();
     }
+    // flush drawing routines to the window
+    glFlush();
 }
 
 // Function called everytime a key is pressed
@@ -87,7 +80,7 @@ int main(int argc, char* argv[])
     // setup the size, position, and display mode for new windows
     glutInitWindowSize(500, 500);
     glutInitWindowPosition(0, 0);
-    glutInitDisplayMode(GLUT_RGB);
+    glutInitDisplayMode( GLUT_RGB | GLUT_DEPTH);
 
     // create and set up a window
     glutCreateWindow("Hello, teapot!");
@@ -107,7 +100,28 @@ int main(int argc, char* argv[])
     // define the viewing transformation
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    gluLookAt(0.0,2.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0);
+    gluLookAt(1.0,1.0,1.0,0.0,0.0,0.0,0.0,1.0,0.0);
+
+    // define light
+
+    glEnable(GL_DEPTH_TEST);
+
+    GLfloat light_ambient[] = { .0, .0, .0, 1. }; // the ambient component
+    GLfloat light_diffuse[] = { 1., 1., 1., 1. }; // the diffuse component
+    GLfloat light_specular[] = { 1., 1., 1., 1. }; // the specular component
+    GLfloat light_position[] = { 1., 1., 1., .0 }; // the light position
+    
+    // set the components to the first light
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    
+    // activate lighting effects
+    glEnable(GL_LIGHTING);
+    // turn on the first light
+    glEnable(GL_LIGHT0);
+
 
     // tell GLUT to wait for events
     glutMainLoop();

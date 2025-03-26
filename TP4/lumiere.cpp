@@ -37,23 +37,26 @@ Material room_material = {
     {.0f, .0f, .0f, 1.f}
 };
 
-Material cube_material = {
+Material cube_material = { // green rubber
     // ambient
-    {.7f, .7f, .7f, 1.f},
+    { 0.0f,0.05f,0.0f,1.0f },
     // diffuse
-    {.0f, .0f, .0f, 1.f},
+    { 0.4f,0.5f,0.4f,1.0f},
     // specular
+    {0.04f,0.7f,0.04f,1.0f },
+    // shininess
+    10.0f
     };
 
 Material sphere_material = {
     // ambient
-    {.2f, .2f, .2f, 1.f},
+    { 0.1745f, 0.01175f, 0.01175f, 0.55f },
     // diffuse
-    {.0f, .0f, .0f, 1.f},
+    {0.61424f, 0.04136f, 0.04136f, 0.55f },
     // specular
-    {.8f, .8f, .8f, 1.f},
+    {0.727811f, 0.626959f, 0.626959f, 0.55f },
     // shininess
-    25.f
+    10.0f
 };
 
 Light light_properties = {
@@ -133,56 +136,38 @@ void place_camera()
 */
 void place_light(Light& light) 
 {
+    
     //**********************************
     // set the light position (directional or positional)
     //**********************************
-
-
-
-
-
-
-
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light.ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light.diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light.specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light.position);
 
     //**********************************
     // draw a yellow point or a yellow line from the origin in the direction of the light
     // to help visualize the light
     //**********************************
+    glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHT0);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    glMatrixMode(GL_MODELVIEW);
+    glPushMatrix();
+        glColor3f(1.0f,1.0f,.0f);
+        glTranslatef(light.position[0], light.position[1], light.position[2]);
+        glutWireSphere(.10,100,100);
+    // glBegin(GL_POINTS);
+    //     glColor3f(1,1,0);
+    //     glVertex3f(1,1,1);
+    // glEnd();
+    glPopMatrix();
 
     //**********************************
     // turn the light and the lighting on
     //**********************************
-
-
-
-
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
 }
 
 /**
@@ -234,17 +219,17 @@ void init ()
     //**********************************
     // activate the Gouraud shading instead of the flat one
     //**********************************
-    glShadeModel (GL_FLAT);
+    glShadeModel(GL_SMOOTH);
 
     //**********************************
     // enable face culling
     //**********************************
-
+    glEnable(GL_CULL_FACE);
 
     //**********************************
     // enable the depth test
     //**********************************
-
+    glEnable(GL_DEPTH_TEST);
 
 
     //**********************************
@@ -280,13 +265,13 @@ void display(double aspect_ratio)
             //**********************************
             // place the light in the scene using place_light
             //**********************************
-
+            place_light(light_properties);
 
 
             //**********************************
             // define the material for the room (instead of color)
             //**********************************
-            glColor3f (1.f, 1.f, 1.f);
+            define_material(room_material);
 
 
 
@@ -300,7 +285,7 @@ void display(double aspect_ratio)
                 //**********************************
                 // define the material for the sphere (instead of color)
                 //**********************************
-                glColor3f (1.f, 0.f, 0.f);
+                define_material(sphere_material);
 
 
 
@@ -315,7 +300,7 @@ void display(double aspect_ratio)
                 //**********************************
                 // define the material for the cube (instead of color)
                 //**********************************
-                glColor3f (0.f, 1.f, 0.f);
+                define_material(cube_material);
 
 
 
