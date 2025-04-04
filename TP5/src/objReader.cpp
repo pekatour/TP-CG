@@ -52,7 +52,8 @@ bool load(const std::string& filename, std::vector<point3d>& vertices, std::vect
             // and its normal to the list of normals: for the time
             // being it is a [0, 0 ,0] normal.
             //**************************************************
-
+            vertices.push_back(p);
+            normals.push_back(vec3d());
 
 
             // update the bounding box, if it is the first vertex simply
@@ -75,23 +76,26 @@ bool load(const std::string& filename, std::vector<point3d>& vertices, std::vect
             //**************************************************
             // correct the indices: OBJ starts counting from 1, in C the arrays starts at 0...
             //**************************************************
-
+            t -= 1;
+            
 
             //**************************************************
             // add it to the mesh
             //**************************************************
-
+            mesh.push_back(t);
 
             //*********************************************************************
             //  Compute the normal of the face  (to be done for section 5.3)
             //*********************************************************************
-
+            vec3d n = computeNormal(vertices[t.v1], vertices[t.v2], vertices[t.v3]);
+            
 
             //*********************************************************************
             // Sum the normal of the face to each vertex normal (to be done for section 5.3)
             //*********************************************************************
-
-
+            normals[t.v1] += n;
+            normals[t.v2] += n;
+            normals[t.v3] += n;
 
 
         }
@@ -105,12 +109,13 @@ bool load(const std::string& filename, std::vector<point3d>& vertices, std::vect
     //*********************************************************************
     // normalize the normals of each vertex (to be done for section 5.3)
     //*********************************************************************
+    for (int i = 0; i < normals.size(); i++){
+        normals[i].normalize();
+    }
 
 
 
-
-
-//        PRINTVAR( normals );
+    // PRINTVAR( normals );
 
     // Close OBJ file
     objFile.close();

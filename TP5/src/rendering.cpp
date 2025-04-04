@@ -42,16 +42,17 @@ void drawWireframe(const std::vector<point3d>& vertices,
     // for each face of the mesh...
     //**************************************************
 
-    {
+    for (int i = 0; i< mesh.size(); i++){
         //**************************************************
         // draw the contour of the face as a  GL_LINE_LOOP
         //**************************************************
+        glBegin(GL_LINE_LOOP);
 
+            glVertex3fv((float *) &vertices[mesh[i].v1]);
+            glVertex3fv((float *) &vertices[mesh[i].v2]);
+            glVertex3fv((float *) &vertices[mesh[i].v3]);
 
-
-
-
-
+        glEnd();
 
     }
 
@@ -82,22 +83,19 @@ void drawFaces(const std::vector<point3d>& vertices,
         // for each face
         //**************************************************
 
-        {
+        for (int i = 0; i< mesh.size(); i++){
             //**************************************************
             // Compute the normal to the face and then draw the
             // faces as GL_TRIANGLES assigning the proper normal
             //**************************************************
+            glBegin(GL_TRIANGLES);
+            vec3d n = computeNormal(vertices[mesh[i].v1], vertices[mesh[i].v2], vertices[mesh[i].v3]);
+            glNormal3fv((float *) &n);
+            glVertex3fv((float *) &vertices[mesh[i].v1]);
+            glVertex3fv((float *) &vertices[mesh[i].v2]);
+            glVertex3fv((float *) &vertices[mesh[i].v3]);
 
-
-
-
-
-
-
-
-
-
-
+            glEnd();
 
         }
 
@@ -106,12 +104,21 @@ void drawFaces(const std::vector<point3d>& vertices,
     {
         glShadeModel(GL_SMOOTH);
 
-        {
+        for (int i = 0; i< mesh.size(); i++){
             //**************************************************
             // Compute the normal to the face and then draw the
             // faces as GL_TRIANGLES assigning the proper normal
             //**************************************************
+            glBegin(GL_TRIANGLES);
+            //vec3d n = computeNormal(vertices[mesh[i].v1], vertices[mesh[i].v2], vertices[mesh[i].v3]);
+            glNormal3fv((float *) &vertexNormals[mesh[i].v1]);
+            glVertex3fv((float *) &vertices[mesh[i].v1]);
+            glNormal3fv((float *) &vertexNormals[mesh[i].v2]);
+            glVertex3fv((float *) &vertices[mesh[i].v2]);
+            glNormal3fv((float *) &vertexNormals[mesh[i].v3]);
+            glVertex3fv((float *) &vertices[mesh[i].v3]);
 
+            glEnd();
 
 
 
