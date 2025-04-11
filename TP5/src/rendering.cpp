@@ -161,37 +161,37 @@ void drawArrayFaces(const std::vector<point3d>& vertices,
     //****************************************
     // Enable vertex arrays
     //****************************************
-
+    glEnableClientState(GL_VERTEX_ARRAY);
 
     //****************************************
     // Enable normal arrays
     //****************************************
-
+    glEnableClientState(GL_NORMAL_ARRAY);
 
     //****************************************
     // Normal pointer to normal array
     //****************************************
-
+    glNormalPointer(GL_FLOAT, 0, (float*) &vertexNormals[0]);
 
     //****************************************
     // Vertex pointer to Vertex array
     //****************************************
-
+    glVertexPointer(3, GL_FLOAT, 0, (float*) &vertices[0]);
 
     //****************************************
     // Draw the faces
     //****************************************
-
+    glDrawElements(GL_TRIANGLES,(GLsizei) indices.size()*3, GL_UNSIGNED_INT, &indices[0]);
 
     //****************************************
     // Disable vertex arrays
     //****************************************
-
+    glDisableClientState(GL_VERTEX_ARRAY);
 
     //****************************************
     // Disable normal arrays
     //****************************************
-
+    glDisableClientState(GL_NORMAL_ARRAY);
 }
 
 

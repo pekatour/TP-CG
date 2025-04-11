@@ -40,18 +40,21 @@ void loopSubdivision(const std::vector<point3d>& origVert, //!< the original ver
     // for each face
     //*********************************************************************
 
+    for (size_t i = 0; i < origMesh.size(); i++)
     {
         //*********************************************************************
         // get the indices of the triangle vertices
         //*********************************************************************
-
-
-
+        idxtype v1 = origMesh[i].v1;
+        idxtype v2 = origMesh[i].v2;
+        idxtype v3 = origMesh[i].v3;
 
         //*********************************************************************
         // for each edge get the index of the vertex of the midpoint using getNewVertex
         //*********************************************************************
-
+        edge e1(v1,v2);
+        edge e2(v2,v3);
+        edge e3(v3,v1);
 
 
 
@@ -182,16 +185,16 @@ idxtype getNewVertex(const edge& e,
     // if the egde is NOT contained in the new vertex list (see EdgeList.contains() method)
     //*********************************************************************
 
-    {
+    if (newVertList.contains(e)){
         //*********************************************************************
         // generate new index (vertex.size)
         //*********************************************************************
-
+        idxtype i = vertList.size();
 
         //*********************************************************************
         // add the edge and index to the newVertList
         //*********************************************************************
-
+        newVertList.add(e, i);
 
         // generate new vertex
         point3d nvert;        //!< this will contain the new vertex
@@ -203,9 +206,9 @@ idxtype getNewVertex(const edge& e,
         // sharing this edge and if so get the index of its "opposite" vertex
         //*********************************************************************
 
-        {
+        if (!isBoundaryEdge(e, mesh, oppV1, oppV2)){
             // if it is not a boundary edge create the new vertex
-
+            nvert = (3./8. * (vertList[e.first] + vertList[e.second]) + 1./8. * (vertList[oppV1] + vertList[oppV2]));
             //*********************************************************************
             // the new vertex is the linear combination of the two extrema of
             // the edge V1 and V2 and the two opposite vertices oppV1 and oppV2
@@ -218,31 +221,31 @@ idxtype getNewVertex(const edge& e,
 
         }
 //         else
-        {
+        else {
             //*********************************************************************
             // otherwise it is a boundary edge then the vertex is the linear combination of the
             // two extrema
             //*********************************************************************
-
+            nvert = 1./2. * (vertList[e.first] + vertList[e.second]);
         }
         //*********************************************************************
         // append the new vertex to the list of vertices
         //*********************************************************************
-
+        newVertList.add(e, i);
 
         //*********************************************************************
         // return the index of the new vertex
         //*********************************************************************
-
+        return i;
     }
 //     else
     // else we don't need to do anything, just return the associated index of the
     // already existing vertex
-    {
+    else {
         //*********************************************************************
         // get and return the index of the vertex
         //*********************************************************************
-
+        return newVertList.getIndex(e);
     }
 
     // this is just to avoid compilation errors at the beginning
