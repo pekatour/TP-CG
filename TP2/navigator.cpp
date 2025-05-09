@@ -19,12 +19,13 @@
 #include <iostream>
 using namespace std;
 
-#define SPEED 0.1 //OpenGL unit
-#define ANG_SPEED 0.5 //degrees
+#define SPEED 0.1f //OpenGL unit
+#define ANG_SPEED 0.5f //degrees
 
-GLdouble x = .0;
-GLdouble y = .0;
-GLdouble z = 5.0;
+// variables containing the "fake" position and the camera and its angle
+GLfloat x = .0f;
+GLfloat y = .0f;
+GLfloat z = .0f;
 
 GLfloat theta = 0;
 GLfloat psi = 0;
@@ -40,7 +41,12 @@ void display()
 
     // draw scene
     glLoadIdentity();
-    gluLookAt(x, y, z, .0, .0, -1., .0, 1., .0);
+    gluLookAt(.0, .0, 5.0, .0, .0, -1., .0, 1., .0);
+
+    // move the objects according to the "fake" camera position and angle
+    glTranslatef(x, y, z);
+    glRotatef(theta, 0.0f, 1.0f, 0.0f);
+    glRotatef(psi, 1.0f, 0.0f, 0.0f);
 
     // add a copy of the curr. matrix to the stack
     glPushMatrix();
@@ -87,8 +93,22 @@ void key(unsigned char key, int, int)
         case 27: exit(EXIT_SUCCESS); break;
         case 'q': x += SPEED; break;
         case 'd': x -= SPEED; break;
-        case 'z': z -= SPEED; break;
-        case 's': z += SPEED; break;
+        case 'z': z += SPEED; break;
+        case 's': z -= SPEED; break;
+        case 'a': y -= SPEED; break;
+        case 'w': y += SPEED; break;
+        default: break;
+    }
+    glutPostRedisplay();
+}
+void specialkeys(int key, int, int)
+{
+    switch(key)
+    {   // BROKEN FIX PLS
+        case GLUT_KEY_LEFT: theta += ANG_SPEED; break;
+        case GLUT_KEY_RIGHT: theta -= ANG_SPEED; break;
+        case GLUT_KEY_UP: psi -= ANG_SPEED; break;
+        case GLUT_KEY_DOWN: psi += ANG_SPEED; break;
         default: break;
     }
     glutPostRedisplay();
@@ -117,6 +137,7 @@ int main(int argc, char* argv[])
     glutDisplayFunc(display);
     // for the keyboard
     glutKeyboardFunc(key);
+    glutSpecialFunc(specialkeys);
     // for reshaping
     glutReshapeFunc(reshape);
 
