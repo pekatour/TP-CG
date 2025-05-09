@@ -44,9 +44,10 @@ void display()
     gluLookAt(.0, .0, 5.0, .0, .0, -1., .0, 1., .0);
 
     // move the objects according to the "fake" camera position and angle
-    glTranslatef(x, y, z);
-    glRotatef(theta, 0.0f, 1.0f, 0.0f);
-    glRotatef(psi, 1.0f, 0.0f, 0.0f);
+    // glTranslatef(x, y, z);
+    // glRotatef(theta, 0.0f, 1.0f, 0.0f);
+    // glRotatef(psi, 1.0f, 0.0f, 0.0f);
+    // Doesn't work for now
 
     // add a copy of the curr. matrix to the stack
     glPushMatrix();
@@ -104,13 +105,15 @@ void key(unsigned char key, int, int)
 void specialkeys(int key, int, int)
 {
     switch(key)
-    {   // BROKEN FIX PLS
+    { 
         case GLUT_KEY_LEFT: theta += ANG_SPEED; break;
         case GLUT_KEY_RIGHT: theta -= ANG_SPEED; break;
         case GLUT_KEY_UP: psi -= ANG_SPEED; break;
         case GLUT_KEY_DOWN: psi += ANG_SPEED; break;
         default: break;
     }
+    if (psi > 89.0f) psi = 89.0f;
+    if (psi < -89.0f) psi = -89.0f;
     glutPostRedisplay();
 }
 
