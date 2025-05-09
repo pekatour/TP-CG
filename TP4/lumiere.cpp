@@ -34,7 +34,9 @@ Material room_material = {
     // diffuse
     {.25f, .25f, .25f, 1.f},
     // specular
-    {.0f, .0f, .0f, 1.f}
+    {.0f, .0f, .0f, 1.f},
+    // shininess
+    0.f
 };
 
 Material cube_material = { // green rubber
