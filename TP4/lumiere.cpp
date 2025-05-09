@@ -67,7 +67,9 @@ Light light_properties = {
     // specular
     {.5f, .5f, .5f, .5f},
     // position
-    {4.f, 4.f, -4.f, 1.f}
+    {4.f, 4.f, -4.f, 1.f},
+    // directional
+    false,
 };
 
 
@@ -140,6 +142,12 @@ void place_light(Light& light)
     //**********************************
     // set the light position (directional or positional)
     //**********************************
+    if (light_properties.directional){
+        light_properties.position[3] = 0.f;
+    }
+    else {
+        light_properties.position[3] = 1.f;
+    } 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light.ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light.diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light.specular);
@@ -155,8 +163,19 @@ void place_light(Light& light)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
         glColor3f(1.0f,1.0f,.0f);
-        glTranslatef(light.position[0], light.position[1], light.position[2]);
-        glutWireSphere(.10,100,100);
+        
+
+        if (light_properties.directional){
+            glBegin(GL_LINES);
+            glVertex3f(0,0,0);
+            glVertex3f(light.position[0], light.position[1], light.position[2]);
+            glEnd();
+        }
+        else {
+            glTranslatef(light.position[0], light.position[1], light.position[2]);
+            glutWireSphere(.10,100,100);
+        }  
+        
     // glBegin(GL_POINTS);
     //     glColor3f(1,1,0);
     //     glVertex3f(1,1,1);
@@ -326,13 +345,7 @@ void keyboard(unsigned char key, int x, int y)
         // directional light, use global variable directional
         //**********************************
         case 'd':
-
-
-
-
-
-
-
+            light_properties.directional = not(light_properties.directional);
         break;
 
         //**********************************

@@ -111,7 +111,7 @@ int main(int argc, char* argv[])
     glutInitDisplayMode(GLUT_RGB);
 
     // create and set up a window
-    glutCreateWindow("hello, teapot!");
+    glutCreateWindow("hello, teapots!");
     // Set up the callback functions
     // for display
     glutDisplayFunc(display);
