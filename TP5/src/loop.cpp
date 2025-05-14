@@ -55,8 +55,9 @@ void loopSubdivision(const std::vector<point3d>& origVert, //!< the original ver
         edge e1(v1,v2);
         edge e2(v2,v3);
         edge e3(v3,v1);
-
-
+        idxtype a = getNewVertex(e1, destVert, origMesh, newVertices);
+        idxtype b = getNewVertex(e2, destVert, origMesh, newVertices);
+        idxtype c = getNewVertex(e3, destVert, origMesh, newVertices);
 
         //*********************************************************************
         // create the four new triangles
@@ -74,11 +75,14 @@ void loopSubdivision(const std::vector<point3d>& origVert, //!< the original ver
         // the original triangle was v1-v2-v3, use the same clock-wise order for the other
         // hence v1-a-c, a-b-c and so on
         //*********************************************************************
-
-
-
-
-
+        face f1 = face(v1, a, c);
+        destMesh.push_back(f1);
+        face f2 = face(c, b, v3);
+        destMesh.push_back(f2);
+        face f3 = face(c, a, b);
+        destMesh.push_back(f3);
+        face f4 = face(a, v2, b);
+        destMesh.push_back(f4);
     }
 
     //*********************************************************************
@@ -100,7 +104,7 @@ void loopSubdivision(const std::vector<point3d>& origVert, //!< the original ver
     //*********************************************************************
     // for each face
     //*********************************************************************
-
+    for (size_t i = 0; i < origMesh.size(); i++)
     {
         //*********************************************************************
         // consider each of the 3 vertices:
@@ -109,24 +113,25 @@ void loopSubdivision(const std::vector<point3d>& origVert, //!< the original ver
         // BE CAREFUL WITH THE COEFFICIENT OF THE OTHER 2 VERTICES!... consider
         // how many times each vertex is summed in the general case...
         //*********************************************************************
-
-
-
-
-
-
-
-
-
+        idxtype v1 = origMesh[i].v1;
+        idxtype v2 = origMesh[i].v2;
+        idxtype v3 = origMesh[i].v3;
+        occurrences[v1]++; occurrences[v2]++; occurrences[v3]++; 
+        tmp[v1] += (3./16.) * (origVert[v2] + origVert[v3]);
+        tmp[v2] += (3./16.) * (origVert[v1] + origVert[v3]);
+        tmp[v3] += (3./16.) * (origVert[v2] + origVert[v1]);
     }
 
     //*********************************************************************
     //  To obtain the new vertices, divide each vertex by its occurrence value
     //*********************************************************************
-
+    for (size_t i = 0; i < origVert.size(); i++)
     {
 //         assert( occurrences[i] != 0 );
-
+        if (occurrences[i] != 0){
+            tmp[i] /= (float) occurrences[i];
+            destVert[i] = tmp[i] + 5./8. * origVert[i];
+        }
     }
     //PRINTVAR(destVert);
 
@@ -138,27 +143,32 @@ void loopSubdivision(const std::vector<point3d>& origVert, //!< the original ver
     //*********************************************************************
     //  Recompute the normals for each face
     //*********************************************************************
-
-    {
+    for (size_t i = 0; i < destMesh.size(); i++)
+    {   
+        face f = destMesh[i];
         //*********************************************************************
         //  Calculate the normal of the triangles, it will be the same for each vertex
         //*********************************************************************
-
+        vec3d n = computeNormal(destVert[f.v1], destVert[f.v2], destVert[f.v3]);
 
         //*********************************************************************
         // Sum the normal of the face to each vertex normal using the angleAtVertex as weight
         //*********************************************************************
-
-
-
+        float p1 = angleAtVertex(destVert[f.v1], destVert[f.v2], destVert[f.v3]);
+        destNorm[f.v1] += n * p1;
+        float p2 = angleAtVertex(destVert[f.v2], destVert[f.v1], destVert[f.v3]);
+        destNorm[f.v2] += n * p2;
+        float p3 = angleAtVertex(destVert[f.v3], destVert[f.v2], destVert[f.v1]);
+        destNorm[f.v3] += n * p3;
     }
+
     //*********************************************************************
     // normalize the normals of each vertex
     //*********************************************************************
-
-
-
-
+    for (size_t i = 0; i < destNorm.size(); i++)
+    {  
+        destNorm[i].normalize();
+    }
 }
 
 /**
@@ -185,11 +195,11 @@ idxtype getNewVertex(const edge& e,
     // if the egde is NOT contained in the new vertex list (see EdgeList.contains() method)
     //*********************************************************************
 
-    if (newVertList.contains(e)){
+    if (!newVertList.contains(e)){
         //*********************************************************************
         // generate new index (vertex.size)
         //*********************************************************************
-        idxtype i = vertList.size();
+        idxtype i = (idxtype) vertList.size();
 
         //*********************************************************************
         // add the edge and index to the newVertList
@@ -231,7 +241,7 @@ idxtype getNewVertex(const edge& e,
         //*********************************************************************
         // append the new vertex to the list of vertices
         //*********************************************************************
-        newVertList.add(e, i);
+        vertList.push_back(nvert);
 
         //*********************************************************************
         // return the index of the new vertex
