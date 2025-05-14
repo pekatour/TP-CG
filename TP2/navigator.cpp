@@ -17,17 +17,18 @@
 #endif
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 #define SPEED 0.1f //OpenGL unit
-#define ANG_SPEED 0.5f //degrees
+#define ANG_SPEED 0.05f //degrees
 
 // variables containing the "fake" position and the camera and its angle
 GLfloat x = .0f;
 GLfloat y = .0f;
-GLfloat z = .0f;
+GLfloat z = 5.0f;
 
-GLfloat theta = 0;
+GLfloat theta = -M_PI_2;
 GLfloat psi = 0;
 
 
@@ -41,7 +42,16 @@ void display()
 
     // draw scene
     glLoadIdentity();
-    gluLookAt(.0, .0, 5.0, .0, .0, -1., .0, 1., .0);
+
+    GLfloat lookAtX = x + cos(theta) * cos(psi);
+    GLfloat lookAtY = y + sin(psi);
+    GLfloat lookAtZ = z + sin(theta) * cos(psi);
+
+    GLfloat upX = 0.0f ;
+    GLfloat upY = 1.0f ;
+    GLfloat upZ = 0.0f ;
+
+    gluLookAt(x, y, z, lookAtX, lookAtY, lookAtZ -1. , upX, upY, upZ);
 
     // move the objects according to the "fake" camera position and angle
     // glTranslatef(x, y, z);
@@ -92,12 +102,12 @@ void key(unsigned char key, int, int)
     switch(key)
     {
         case 27: exit(EXIT_SUCCESS); break;
-        case 'q': x += SPEED; break;
-        case 'd': x -= SPEED; break;
-        case 'z': z += SPEED; break;
-        case 's': z -= SPEED; break;
-        case 'a': y -= SPEED; break;
-        case 'w': y += SPEED; break;
+        case 'q': x -= SPEED; break;
+        case 'd': x += SPEED; break;
+        case 'z': z -= SPEED; break;
+        case 's': z += SPEED; break;
+        case 'a': y += SPEED; break;
+        case 'w': y -= SPEED; break;
         default: break;
     }
     glutPostRedisplay();
@@ -106,14 +116,14 @@ void specialkeys(int key, int, int)
 {
     switch(key)
     { 
-        case GLUT_KEY_LEFT: theta += ANG_SPEED; break;
-        case GLUT_KEY_RIGHT: theta -= ANG_SPEED; break;
-        case GLUT_KEY_UP: psi -= ANG_SPEED; break;
-        case GLUT_KEY_DOWN: psi += ANG_SPEED; break;
+        case GLUT_KEY_LEFT: theta -= ANG_SPEED; break;
+        case GLUT_KEY_RIGHT: theta += ANG_SPEED; break;
+        case GLUT_KEY_UP: psi += ANG_SPEED; break;
+        case GLUT_KEY_DOWN: psi -= ANG_SPEED; break;
         default: break;
     }
-    if (psi > 89.0f) psi = 89.0f;
-    if (psi < -89.0f) psi = -89.0f;
+    if (psi > M_PI_2) psi = M_PI_2;
+    if (psi < -M_PI_2) psi = -M_PI_2;
     glutPostRedisplay();
 }
 
